@@ -1,0 +1,5 @@
+第一层,#genre#
+CCfffV1,http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/62ba60f059624e000781c436/master.m3u8
+Cedf2,http://121.24.98.226:8090/hls/10/index.m3u8
+CCTV-1综合"https://live.fanmingming.com/tv/CCTV1.png",
+http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/62ba60f059624e000781c436/master.m3u8
