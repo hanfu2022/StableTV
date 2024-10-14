@@ -1,9 +1,18 @@
-Undefined#genre#Bread TV面包台 (720p),https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
-General#genre#TBS eFM (1080p) [Not 24/7],https://ythls.armelin.one/channel/UCHjDAeTbO4fQilomLD-kaXg.m3u8
-Entertainment#genre#天才衝衝衝 (1080p),https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV26.m3u8
-Shop#genre#東森購物60 (480p),https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV18.m3u8
-General#genre#Dali TV (大立電視台) (720p),http://www.dalitv.com.tw:4568/live/dali/index.m3u8
-Kids#genre#EBC YOYO (720p),https://ythls.armelin.one/channel/UCiWRSesvSYmY7YOyz0tv_zQ.m3u8
-General#genre#HOY TV開電視,https://pull-f5-spe.ixigua.com/yeslivetv.com/934973832-202925490/index.m3u8
-Undefined#genre#J2,https://pull-f5-spe.ixigua.com/yeslivetv.com/6027316-581799927/index.m3u8
-Undefined#genre#Pet Club TV,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-petclub-samsungnz/playlist.m3u8
+Undefined#genre#
+Bread TV面包台 (720p),https://video.bread-tv.com:8091/hls-live24/online/index.m3u8
+General#genre#
+TBS eFM (1080p) [Not 24/7],https://ythls.armelin.one/channel/UCHjDAeTbO4fQilomLD-kaXg.m3u8
+Entertainment#genre#
+天才衝衝衝 (1080p),https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV26.m3u8
+Shop#genre#
+東森購物60 (480p),https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV18.m3u8
+General#genre#
+Dali TV (大立電視台) (720p),http://www.dalitv.com.tw:4568/live/dali/index.m3u8
+Kids#genre#
+EBC YOYO (720p),https://ythls.armelin.one/channel/UCiWRSesvSYmY7YOyz0tv_zQ.m3u8
+General#genre#
+HOY TV開電視,https://pull-f5-spe.ixigua.com/yeslivetv.com/934973832-202925490/index.m3u8
+Undefined#genre#
+J2,https://pull-f5-spe.ixigua.com/yeslivetv.com/6027316-581799927/index.m3u8
+Undefined#genre#
+Pet Club TV,https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-petclub-samsungnz/playlist.m3u8
