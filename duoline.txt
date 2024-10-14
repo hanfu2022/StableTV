@@ -1,11 +1,3 @@
-101tv Cadiz,
-https://streaming101tv.es/hls/webcadiz.m3u8
-101tv Malaga,https://limited38.todostreaming.es/live/101tv-web101tv.m3u8
-101tv Ronda,https://streaming101tv.es/hls/webronda.m3u8
-101tv Sevilla,https://streaming101tv.es/hls/websevilla.m3u8
-10 Bold Sydney,https://i.mjh.nz/10bold-nsw.m3u8
-
-
 2,
 https://streaming101tv.es/hls/webcadiz.m3u8,https://limited38.todostreaming.es/live/101tv-web101tv.m3u8
 101tv Ronda,https://streaming101tv.es/hls/webronda.m3u8
