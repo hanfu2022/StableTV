@@ -1,5 +1,4 @@
-2,
-https://streaming101tv.es/hls/webcadiz.m3u8
+2,https://streaming101tv.es/hls/webcadiz.m3u8
 https://limited38.todostreaming.es/live/101tv-web101tv.m3u8
 https://streaming101tv.es/hls/webronda.m3u8
 https://streaming101tv.es/hls/websevilla.m3u8
