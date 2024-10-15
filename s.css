@@ -1,13 +1,54 @@
+
+
+/* 保留原有全局样式 */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin-top: 20px;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0; /* 可以添加背景色，也可以不加 */
 }
 
+h1 {
+    margin-bottom: 20px;
+}
+
+/* 视频播放器的外层容器，确保居中 */
+.player-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* 视频播放器的样式 */
+.video-player {
+    width: 100%;          /* 让宽度自适应屏幕 */
+    max-width: 600px;      /* 设置桌面版最大宽度为600px */
+    height: auto;          /* 高度根据宽度自动调整 */
+    margin: 20px auto;     /* 在屏幕上居中，保持20px上边距 */
+    display: block;
+}
+
+/* 对于较小屏幕，播放器宽度调整为全屏 */
+@media screen and (max-width: 768px) {
+    .video-player {
+        width: 100%;
+        max-width: 100%;  /* 在小屏设备上播放器最大宽度为100% */
+    }
+}
+
+/* 对于更小的手机屏幕，比如竖屏 */
+@media screen and (max-width: 480px) {
+    .video-player {
+        width: 100%;
+        max-width: 100%;  /* 在小屏设备上确保播放器占满屏幕 */
+    }
+}
+
+/* 原有的其他元素样式 */
 video {
-    margin-top: 20px;
+    margin-top: 20px;  /* 视频播放器的上边距 */
 }
 
 select, button {
-    margin: 10px;
+    margin: 10px;  /* 选择框和按钮的边距 */
 }
