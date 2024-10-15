@@ -1,0 +1,13 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin-top: 20px;
+}
+
+video {
+    margin-top: 20px;
+}
+
+select, button {
+    margin: 10px;
+}
