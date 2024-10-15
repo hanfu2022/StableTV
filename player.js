@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let channelList = [];
 
     // Load the channel list from the channels.txt file
-    fetch('a.txt')
+    const channelsTxtUrl = 'https://tv.42.ar/channels.txt';
+
+fetch(channelsTxtUrl)  // 这里将路径改成远程路径
         .then(response => response.text())
         .then(data => {
             // Split the txt file by line and populate the channel list
