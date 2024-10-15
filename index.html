@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>m3u8 Player</title>
-    <!-- 添加 CSS 文件 -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="s.css">
 </head>
 <body>
     <h1>m3u8 Player</h1>
-
-    <div class="player-container">
-        <!-- 频道选择下拉列表 -->
-        <select id="channelSelect" class="channel-select">
-            <option value="">Loading channels...</option>
+    
+    <div>
+        <select id="channelSelect">
+            <!-- Options will be populated dynamically -->
         </select>
-        <button id="playButton" class="play-button">Play</button>
+        <button id="playButton">Play</button>
     </div>
+    
+    <video id="videoPlayer" controls width="1200" height="800"></video>
 
-    <video id="videoPlayer" controls width="600" height="400" class="video-player"></video>
-
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="hls.min.js"></script>
     <script src="player.js"></script>
 </body>
 </html>
