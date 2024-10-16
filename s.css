@@ -1,56 +1,83 @@
-
-
-/* 保留原有全局样式 */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 0;
-    padding: 20px;
-    background-color: #f0f0f0; /* 可以添加背景色，也可以不加 */
+    margin-top: 20px;
 }
 
-h1 {
-    margin-bottom: 20px;
-}
-
-/* 视频播放器的外层容器，确保居中 */
-.player-container {
-    max-width: 100%;
-    margin: 0 auto;
-}
-
-/* 视频播放器的样式 */
-.video-player {
-    width: 100%;          /* 让宽度自适应屏幕 */
-    max-width: 600px;      /* 设置桌面版最大宽度为600px */
-    height: auto;          /* 高度根据宽度自动调整 */
-    margin: 20px auto;     /* 在屏幕上居中，保持20px上边距 */
-    display: block;
-}
-
-/* 对于较小屏幕，播放器宽度调整为全屏 */
-@media screen and (max-width: 768px) {
-    .video-player {
-        width: 100%;
-        max-width: 100%;  /* 在小屏设备上播放器最大宽度为100% */
-    }
-}
-
-/* 对于更小的手机屏幕，比如竖屏 */
-@media screen and (max-width: 480px) {
-    .video-player {
-        width: 100%;
-        max-width: 100%;  /* 在小屏设备上确保播放器占满屏幕 */
-    }
-}
-
-/* 原有的其他元素样式 */
 video {
-    margin-top: 20px;  /* 视频播放器的上边距 */
+    margin-top: 20px;
 }
 
 select, button {
-    margin: 50px;  /* 选择框和按钮的边距 */
+    margin: 10px;
+}
+/* 页面整体样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
 
+/* 标题样式 */
+h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
 
+/* 播放器容器样式 */
+.player-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* 频道选择下拉菜单的样式 */
+.channel-select {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-right: 10px;
+    width: 250px;
+    transition: all 0.3s ease;
+}
+
+/* 当频道选择框聚焦时的样式 */
+.channel-select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* 播放按钮的样式 */
+.play-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 当鼠标悬停在播放按钮时的效果 */
+.play-button:hover {
+    background-color: #0056b3;
+}
+
+/* 视频播放器样式 */
+.video-player {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
