@@ -50,11 +50,7 @@ video {
 }
 
 select, button {
-    margin: 10px;  /* 选择框和按钮的边距 */
+    margin: 50px;  /* 选择框和按钮的边距 */
 }
 
-#channelSelect {
-    max-width: 300px;  /* 限制 select 的最大宽度 */
-    
-    
-}
+
