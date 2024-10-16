@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 const [name, url] = channel.split(',');
                 channelList.push({ name, url });
                 const option = document.createElement('option');
-                const truncatedName = name.length > 50 ? name.slice(0, 50) + '...' : name;
+                
                 option.value = index;
-                option.textContent = truncatedName;
+               
                 option.textContent = name;
                 channelSelect.appendChild(option);
             });
