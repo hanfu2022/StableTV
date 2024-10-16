@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let channelList = [];
 
     // Load the channel list from the channels.txt file
-    fetch('B.txt')
+    fetch('c.txt')
         .then(response => response.text())
         .then(data => {
             // Split the txt file by line and populate the channel list
