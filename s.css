@@ -55,6 +55,6 @@ select, button {
 
 #channelSelect {
     max-width: 300px;  /* 限制 select 的最大宽度 */
-    white-space: normal;  /* 换行 */
+    
     
 }
