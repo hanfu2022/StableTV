@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>m3u8 Player Switcher with Remote TXT</title>
+    <link rel="stylesheet" href="s.css">
+    <!-- Video.js -->
+    <link href="https://vjs.zencdn.net/7.18.1/video-js.css" rel="stylesheet">
+    <!-- Flowplayer CSS -->
+    <link rel="stylesheet" href="https://releases.flowplayer.org/7.2.7/skin/skin.css" />
+</head>
+<body>
+    <h1>m3u8 Player Switcher with Remote TXT</h1>
+    
+    <div>
+        <label for="playerSelect">Select Player:</label>
+        <select id="playerSelect">
+            <option value="hlsjs">Hls.js</option>
+            <option value="videojs">Video.js</option>
+            <option value="flowplayer">Flowplayer</option>
+            <option value="shaka">Shaka Player</option>
+            <option value="clappr">Clappr</option>
+        </select>
+        <br><br>
+        <label for="channelSelect">Select Video:</label>
+        <select id="channelSelect">
+            <!-- Options will be populated dynamically -->
+        </select>
+        <button id="playButton">Play</button>
+    </div>
+    
+    <video id="videoPlayer" controls class="video-player" width="600"></video>
+    <div id="playerDiv" style="display: none;"></div>
+
+    <!-- Hls.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <!-- Video.js -->
+    <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
+    <!-- Flowplayer -->
+    <script src="https://releases.flowplayer.org/7.2.7/flowplayer.min.js"></script>
+    <!-- Shaka Player -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.2.1/shaka-player.compiled.js"></script>
+    <!-- Clappr -->
+    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+
+    <script>
+        var videoElement = document.getElementById('videoPlayer');
+        var playerDiv = document.getElementById('playerDiv');
+        var channelSelect = document.getElementById('channelSelect');
+        var currentPlayer;
+
+        // Function to fetch and populate m3u8 links from remote txt file
+        function fetchM3U8Links() {
+            var txtUrl = 'https://tv.42.ar/gu.txt'; // URL of your remote .txt file
+            fetch(txtUrl)
+                .then(response => response.text())
+                .then(data => {
+                    var lines = data.split('\n');
+                    lines.forEach(function (line, index) {
+                        if (line.trim() !== '') {
+                            var option = document.createElement('option');
+                            option.value = line.trim();
+                            option.text = 'Video ' + (index + 1);
+                            channelSelect.appendChild(option);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching m3u8 links:', error);
+                });
+        }
+
+        // Call the function to populate the m3u8 links
+        fetchM3U8Links();
+
+        // Function to initialize player based on selection
+        function initPlayer(playerType, videoUrl) {
+            // Clear any previous player
+            if (currentPlayer) {
+                currentPlayer.destroy && currentPlayer.destroy(); // Destroy Clappr and Shaka players
+                videoElement.pause();
+                videoElement.src = '';
+                playerDiv.innerHTML = ''; // Clear Flowplayer container
+                playerDiv.style.display = 'none';
+                videoElement.style.display = 'block'; // Show the <video> element
+            }
+
+            switch (playerType) {
+                case 'hlsjs':
+                    if (Hls.isSupported()) {
+                        var hls = new Hls();
+                        hls.loadSource(videoUrl);
+                        hls.attachMedia(videoElement);
+                        currentPlayer = hls;
+                    } else {
+                        alert('Hls.js is not supported in this browser.');
+                    }
+                    break;
+                case 'videojs':
+                    currentPlayer = videojs(videoElement);
+                    currentPlayer.src({ src: videoUrl, type: 'application/x-mpegURL' });
+                    break;
+                case 'flowplayer':
+                    playerDiv.style.display = 'block'; // Show Flowplayer container
+                    videoElement.style.display = 'none'; // Hide the <video> element
+                    playerDiv.innerHTML = ''; // Reset the Flowplayer container
+                    flowplayer(playerDiv, { clip: { sources: [{ type: 'application/x-mpegurl', src: videoUrl }] } });
+                    break;
+                case 'shaka':
+                    var shakaPlayer = new shaka.Player(videoElement);
+                    shakaPlayer.load(videoUrl).catch(function(error) {
+                        console.error('Shaka Player error', error);
+                    });
+                    currentPlayer = shakaPlayer;
+                    break;
+                case 'clappr':
+                    currentPlayer = new Clappr.Player({
+                        source: videoUrl,
+                        parentId: '#playerDiv',
+                        autoPlay: true
+                    });
+                    videoElement.style.display = 'none';
+                    playerDiv.style.display = 'block';
+                    break;
+                default:
+                    console.error('Unknown player type');
+            }
+        }
+
+        // Event listener for play button
+        document.getElementById('playButton').addEventListener('click', function() {
+            var selectedPlayer = document.getElementById('playerSelect').value;
+            var selectedVideo = document.getElementById('channelSelect').value;
+            if (selectedVideo) {
+                initPlayer(selectedPlayer, selectedVideo);
+            } else {
+                alert('Please select a video first.');
+            }
+        });
+    </script>
+</body>
+</html>
