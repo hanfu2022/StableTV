@@ -55,7 +55,6 @@ select, button {
 
 #channelSelect {
     max-width: 300px;  /* 限制 select 的最大宽度 */
-    white-space: nowrap;  /* 禁止换行 */
-    overflow: hidden;
-    text-overflow: ellipsis;  /* 超过长度时显示省略号 */
+    white-space: normal;  /* 换行 */
+    
 }
