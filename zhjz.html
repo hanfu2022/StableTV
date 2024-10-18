@@ -17,6 +17,33 @@
             padding: 20px;
             color: #888;
         }
+        /* 样式自动适应屏幕 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 调整图片自动适应屏幕宽度 */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* 手机端样式（屏幕宽度小于768px时应用） */
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
