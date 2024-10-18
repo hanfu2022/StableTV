@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Load from TXT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .content {
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="content" id="content"></div>
+<div class="loading" id="loading">Loading more content...</div>
+
+<script>
+// 每次加载的行数
+const linesPerLoad = 100; 
+let currentIndex = 0;  // 当前行的索引
+let lines = [];        // 存储从TXT文件中读取的内容
+
+// 从 TXT 文件加载内容
+fetch('valid_d-g_results.txt')
+    .then(response => response.text())
+    .then(text => {
+        // 将文本按行拆分成数组
+        lines = text.split('\n');
+        loadMoreContent(); // 初始加载部分内容
+    })
+    .catch(error => {
+        console.error('Error loading file:', error);
+        document.getElementById('loading').textContent = 'Error loading content';
+    });
+
+// 获取页面的容器
+const contentDiv = document.getElementById('content');
+
+// 加载内容函数
+function loadMoreContent() {
+    let fragment = document.createDocumentFragment();
+    
+    for (let i = 0; i < linesPerLoad; i++) {
+        if (currentIndex >= lines.length) {
+            document.getElementById('loading').textContent = 'No more content to load';
+            return;
+        }
+        
+        const p = document.createElement('p');
+        p.textContent = lines[currentIndex];
+        fragment.appendChild(p);
+        
+        currentIndex++;
+    }
+
+    contentDiv.appendChild(fragment);
+}
+
+// 监听滚动事件
+window.addEventListener('scroll', () => {
+    // 获取当前页面滚动高度、窗口高度和文档总高度
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+    if (scrollTop + clientHeight >= scrollHeight - 5) {
+        // 滚动到底部时，加载更多内容
+        loadMoreContent();
+    }
+});
+
+</script>
+
+</body>
+</html>
