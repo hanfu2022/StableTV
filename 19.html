@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频播放列表</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .video-item {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .video-item:hover {
+            transform: scale(1.03);
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .title {
+            padding: 10px;
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="videoGrid" class="video-grid"></div>
+        <div id="loading" class="loading">加载中...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        const videoGrid = document.getElementById('videoGrid');
+        const loading = document.getElementById('loading');
+        
+        let videos = [];
+        let currentIndex = 0;
+        const batchSize = 20; // 每次加载的数量
+        const defaultSource = ''; // 空字符串表示使用本地s.txt，可改为网络URL如'https://www.google.com/s.txt'
+
+        // 读取文件内容
+        async function loadFile(source) {
+            try {
+                let response;
+                if (source) {
+                    // 网络文件
+                    response = await fetch(source);
+                    if (!response.ok) throw new Error('网络文件加载失败');
+                } else {
+                    // 本地文件
+                    response = await fetch('s.txt');
+                    if (!response.ok) throw new Error('本地文件加载失败');
+                }
+                const text = await response.text();
+                parseFile(text);
+            } catch (error) {
+                console.error('文件加载失败: ' + error.message);
+                loading.textContent = '文件加载失败，请检查s.txt';
+            }
+        }
+
+        // 解析文件内容（适配逗号分隔格式）
+        function parseFile(text) {
+            const lines = text.trim().split('\n');
+            videos = [];
+            for (let line of lines) {
+                const [title, url] = line.split(',', 2); // 分割标题和URL
+                if (title && url) {
+                    videos.push({
+                        title: title.trim(),
+                        url: url.trim()
+                    });
+                }
+            }
+            currentIndex = 0;
+            videoGrid.innerHTML = '';
+            loadNextBatch();
+        }
+
+        // 加载下一批视频
+        function loadNextBatch() {
+            const endIndex = Math.min(currentIndex + batchSize, videos.length);
+            for (let i = currentIndex; i < endIndex; i++) {
+                createVideoItem(videos[i]);
+            }
+            currentIndex = endIndex;
+            loading.style.display = currentIndex >= videos.length ? 'none' : 'block';
+        }
+
+        // 创建视频项
+        function createVideoItem(video) {
+            const div = document.createElement('div');
+            div.className = 'video-item';
+            
+            const img = document.createElement('img');
+            img.className = 'thumbnail';
+            img.alt = video.title;
+            
+            const title = document.createElement('h3');
+            title.className = 'title';
+            title.textContent = video.title;
+
+            div.appendChild(img);
+            div.appendChild(title);
+            videoGrid.appendChild(div);
+
+            // 获取视频缩略图
+            getThumbnail(video.url, img);
+
+            // 点击播放
+            img.onclick = () => playVideo(video.url, video.title);
+        }
+
+        // 获取视频缩略图
+        function getThumbnail(url, img) {
+            const video = document.createElement('video');
+            video.src = url;
+            video.muted = true;
+            video.preload = 'metadata';
+            
+            video.onloadedmetadata = () => {
+                video.currentTime = Math.min(5, video.duration / 2); // 获取视频中间或5秒处
+            };
+            
+            video.onseeked = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                img.src = canvas.toDataURL('image/jpeg');
+                video.remove();
+            };
+            
+            video.onerror = () => {
+                img.src = 'https://via.placeholder.com/250x150?text=缩略图加载失败';
+            };
+        }
+
+        // 播放视频
+        function playVideo(url, title) {
+            const playerWindow = window.open('', '_blank');
+            playerWindow.document.write(`
+                <html>
+                    <head>
+                        <title>${title}</title>
+                        <style>
+                            body { margin: 0; background: black; }
+                            video { width: 100vw; height: 100vh; object-fit: contain; }
+                        </style>
+                    </head>
+                    <body>
+                        <video controls autoplay></video>
+                        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+                        <script>
+                            const video = document.querySelector('video');
+                            if (Hls.isSupported()) {
+                                const hls = new Hls();
+                                hls.loadSource('${url}');
+                                hls.attachMedia(video);
+                            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                                video.src = '${url}';
+                            }
+                        </script>
+                    </body>
+                </html>
+            `);
+        }
+
+        // 滚动加载
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+                if (currentIndex < videos.length) {
+                    loadNextBatch();
+                }
+            }
+        });
+
+        // 页面加载时自动读取
+        loadFile(defaultSource);
+    </script>
+</body>
+</html>
