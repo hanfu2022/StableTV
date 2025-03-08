@@ -1,212 +1,107 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>视频播放列表</title>
+    <title>Video Gallery</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #f0f0f0;
         }
-        
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .video-item {
-            background-color: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .video-item:hover {
-            transform: scale(1.03);
-        }
-
-        .thumbnail {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        .title {
+        .video-card {
+            width: 300px;
+            margin: 10px;
             padding: 10px;
-            margin: 0;
-            font-size: 14px;
-            color: #333;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
             text-align: center;
         }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
+        .video-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
         }
-
-        @media (max-width: 600px) {
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
+        .video-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .load-more {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="videoGrid" class="video-grid"></div>
-        <div id="loading" class="loading">加载中...</div>
+    <div class="container" id="video-container">
+        <!-- Video cards will be appended here -->
     </div>
+    <a id="load-more" class="load-more" onclick="loadMoreVideos()">Load More Videos</a>
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
-        const videoGrid = document.getElementById('videoGrid');
-        const loading = document.getElementById('loading');
-        
-        let videos = [];
+        const videoContainer = document.getElementById('video-container');
+        const loadMoreButton = document.getElementById('load-more');
         let currentIndex = 0;
-        const batchSize = 20;
-        const defaultSource = 'https://etxt.chickenkiller.com/s.txt'; // 使用你的网络文档
+        const batchSize = 10; // Number of videos to load at a time
+        let videos = [];
 
-        // 读取文件内容
-        async function loadFile(source) {
-            try {
-                const response = await fetch(source, { mode: 'cors' });
-                if (!response.ok) throw new Error('网络文件加载失败: ' + response.status);
-                const text = await response.text();
-                parseFile(text);
-            } catch (error) {
-                console.error('文件加载失败:', error);
-                loading.textContent = '文件加载失败，请检查网络或CORS设置';
-            }
+        // Fetch the s.txt file (local or remote)
+        async function fetchVideoList(url) {
+            const response = await fetch(url);
+            const text = await response.text();
+            videos = text.split('\n').map(line => {
+                const [title, url] = line.split(',');
+                return { title, url };
+            });
+            loadMoreVideos();
         }
 
-        // 解析文件内容
-        function parseFile(text) {
-            const lines = text.trim().split('\n');
-            videos = [];
-            for (let line of lines) {
-                const [title, url] = line.split(',', 2);
-                if (title && url) {
-                    videos.push({
-                        title: title.trim(),
-                        url: url.trim()
-                    });
-                }
-            }
-            currentIndex = 0;
-            videoGrid.innerHTML = '';
-            loadNextBatch();
-        }
-
-        // 加载下一批视频
-        function loadNextBatch() {
-            const endIndex = Math.min(currentIndex + batchSize, videos.length);
-            for (let i = currentIndex; i < endIndex; i++) {
-                createVideoItem(videos[i]);
-            }
+        // Load more videos
+        function loadMoreVideos() {
+            const endIndex = currentIndex + batchSize;
+            const videoBatch = videos.slice(currentIndex, endIndex);
+            videoBatch.forEach(video => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <img src="${getThumbnail(video.url)}" alt="Thumbnail">
+                    <h3>${video.title}</h3>
+                    <a href="${video.url}" target="_blank">Play Video</a>
+                `;
+                videoContainer.appendChild(videoCard);
+            });
             currentIndex = endIndex;
-            loading.style.display = currentIndex >= videos.length ? 'none' : 'block';
-        }
-
-        // 创建视频项
-        function createVideoItem(video) {
-            const div = document.createElement('div');
-            div.className = 'video-item';
-            
-            const img = document.createElement('img');
-            img.className = 'thumbnail';
-            img.alt = video.title;
-            
-            const title = document.createElement('h3');
-            title.className = 'title';
-            title.textContent = video.title;
-
-            div.appendChild(img);
-            div.appendChild(title);
-            videoGrid.appendChild(div);
-
-            getThumbnail(video.url, img);
-            img.onclick = () => playVideo(video.url, video.title);
-        }
-
-        // 获取视频缩略图
-        function getThumbnail(url, img) {
-            const video = document.createElement('video');
-            video.src = url;
-            video.muted = true;
-            video.preload = 'metadata';
-            
-            video.onloadedmetadata = () => {
-                video.currentTime = Math.min(5, video.duration / 2);
-            };
-            
-            video.onseeked = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0);
-                img.src = canvas.toDataURL('image/jpeg');
-                video.remove();
-            };
-            
-            video.onerror = () => {
-                img.src = 'https://via.placeholder.com/250x150?text=缩略图加载失败';
-            };
-        }
-
-        // 播放视频
-        function playVideo(url, title) {
-            const playerWindow = window.open('', '_blank');
-            playerWindow.document.write(`
-                <html>
-                    <head>
-                        <title>${title}</title>
-                        <style>
-                            body { margin: 0; background: black; }
-                            video { width: 100vw; height: 100vh; object-fit: contain; }
-                        </style>
-                    </head>
-                    <body>
-                        <video controls autoplay></video>
-                        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-                        <script>
-                            const video = document.querySelector('video');
-                            if (Hls.isSupported()) {
-                                const hls = new Hls();
-                                hls.loadSource('${url}');
-                                hls.attachMedia(video);
-                            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                                video.src = '${url}';
-                            }
-                        </script>
-                    </body>
-                </html>
-            `);
-        }
-
-        // 滚动加载
-        window.addEventListener('scroll', () => {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-                if (currentIndex < videos.length) {
-                    loadNextBatch();
-                }
+            if (currentIndex >= videos.length) {
+                loadMoreButton.style.display = 'none';
             }
-        });
+        }
 
-        // 页面加载时自动读取
-        loadFile(defaultSource);
+        // Generate a thumbnail for the video
+        function getThumbnail(videoUrl) {
+            // For simplicity, we use a placeholder image.
+            // You can use a video processing library to generate actual thumbnails.
+            return 'https://via.placeholder.com/300x200.png?text=Thumbnail';
+        }
+
+        // Load the video list from a local file (s.txt) or a remote URL
+        fetchVideoList('s.txt'); // Change this to a remote URL if needed
+        // Example: fetchVideoList('https://www.google.com/s.txt');
     </script>
 </body>
 </html>
