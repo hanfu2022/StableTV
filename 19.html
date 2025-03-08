@@ -77,18 +77,16 @@
         let videos = [];
         let currentIndex = 0;
         const batchSize = 20; // 每次加载的数量
-        const defaultSource = ''; // 空字符串表示使用本地s.txt，可改为网络URL如'https://www.google.com/s.txt'
+        const defaultSource = ' '; // 修改为你的网络链接
 
         // 读取文件内容
         async function loadFile(source) {
             try {
                 let response;
                 if (source) {
-                    // 网络文件
                     response = await fetch(source);
                     if (!response.ok) throw new Error('网络文件加载失败');
                 } else {
-                    // 本地文件
                     response = await fetch('s.txt');
                     if (!response.ok) throw new Error('本地文件加载失败');
                 }
@@ -105,7 +103,7 @@
             const lines = text.trim().split('\n');
             videos = [];
             for (let line of lines) {
-                const [title, url] = line.split(',', 2); // 分割标题和URL
+                const [title, url] = line.split(',', 2);
                 if (title && url) {
                     videos.push({
                         title: title.trim(),
@@ -145,10 +143,7 @@
             div.appendChild(title);
             videoGrid.appendChild(div);
 
-            // 获取视频缩略图
             getThumbnail(video.url, img);
-
-            // 点击播放
             img.onclick = () => playVideo(video.url, video.title);
         }
 
@@ -160,7 +155,7 @@
             video.preload = 'metadata';
             
             video.onloadedmetadata = () => {
-                video.currentTime = Math.min(5, video.duration / 2); // 获取视频中间或5秒处
+                video.currentTime = Math.min(5, video.duration / 2);
             };
             
             video.onseeked = () => {
