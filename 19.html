@@ -76,29 +76,23 @@
         
         let videos = [];
         let currentIndex = 0;
-        const batchSize = 20; // 每次加载的数量
-        const defaultSource = 'https://etxt.chickenkiller.com/s.txt'; // 修改为你的网络链接
+        const batchSize = 20;
+        const defaultSource = 'https://etxt.chickenkiller.com/s.txt'; // 使用你的网络文档
 
         // 读取文件内容
         async function loadFile(source) {
             try {
-                let response;
-                if (source) {
-                    response = await fetch(source);
-                    if (!response.ok) throw new Error('网络文件加载失败');
-                } else {
-                    response = await fetch('s.txt');
-                    if (!response.ok) throw new Error('本地文件加载失败');
-                }
+                const response = await fetch(source, { mode: 'cors' });
+                if (!response.ok) throw new Error('网络文件加载失败: ' + response.status);
                 const text = await response.text();
                 parseFile(text);
             } catch (error) {
-                console.error('文件加载失败: ' + error.message);
-                loading.textContent = '文件加载失败，请检查s.txt';
+                console.error('文件加载失败:', error);
+                loading.textContent = '文件加载失败，请检查网络或CORS设置';
             }
         }
 
-        // 解析文件内容（适配逗号分隔格式）
+        // 解析文件内容
         function parseFile(text) {
             const lines = text.trim().split('\n');
             videos = [];
